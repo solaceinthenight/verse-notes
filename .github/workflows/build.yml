@@ -1,0 +1,42 @@
+name: Build Cross-Platform Binaries
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  build-binaries:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    
+    runs-on: ${{ matrix.os }}
+
+    steps:
+    - name: Check out the code
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.13' 
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install pyinstaller
+        pip install -r requirements.txt
+
+    - name: Build with PyInstaller
+      run: |
+        pyinstaller --onefile --name verse_notes-${{ matrix.os }} verse_notes.py
+
+    - name: Upload the binary to the release
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ github.event.release.upload_url }}
+        asset_path: ./dist/verse_notes-${{ matrix.os }}
+        asset_name: verse_notes-${{ matrix.os }}
+        asset_content_type: application/octet-stream

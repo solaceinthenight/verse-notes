@@ -1,0 +1,4 @@
+prompt_toolkit==3.0.52
+pyperclip==1.11.0
+python-dotenv==1.2.1
+Requests==2.32.5
