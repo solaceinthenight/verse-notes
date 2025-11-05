@@ -6,6 +6,12 @@ on:
 
 jobs:
   build-binaries:
+    
+    permissions:
+      contents: write
+      packages: write
+      actions: read
+
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest]
