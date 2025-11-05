@@ -1,4 +1,4 @@
-# verse\_notes
+# verse-notes
 
 ## Build (Executable)
 
