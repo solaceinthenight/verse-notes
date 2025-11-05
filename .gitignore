@@ -1,0 +1,15 @@
+# Python cache files
+__pycache__/
+*.pyc
+
+# PyInstaller build artifacts
+dist/
+build/
+*.spec
+
+# User-specific files
+.verse_repl_history
+bible_notes.json
+
+env/
+.env
