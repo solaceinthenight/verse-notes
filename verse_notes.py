@@ -11,14 +11,47 @@ from prompt_toolkit.history import FileHistory
 import re
 from pathlib import Path
 
+def get_app_data_dir():
+    """
+    Gets the standard, OS-specific data directory.
+    Creates it if it doesn't exist.
+    """
+    app_name = "verse_notes" # This will be the folder name
+
+    # macOS: ~/Library/Application Support/<app_name>
+    if sys.platform == "darwin":
+        data_dir = Path.home() / "Library" / "Application Support" / app_name
+    
+    # Linux (XDG Standard): ~/.local/share/<app_name>
+    elif sys.platform == "linux":
+        # Use XDG_DATA_HOME if set, otherwise default
+        xdg_data = os.environ.get("XDG_DATA_HOME")
+        if xdg_data:
+            data_dir = Path(xdg_data) / app_name
+        else:
+            data_dir = Path.home() / ".local" / "share" / app_name
+    
+    # Fallback (Windows, etc.): ~/.<app_name>
+    # Your original method is a good fallback.
+    else:
+        data_dir = Path.home() / f".{app_name}_data"
+
+    # Create the directory if it doesn't exist
+    try:
+        data_dir.mkdir(parents=True, exist_ok=True)
+    except Exception:
+        # If it fails for any reason, fall back to the current directory
+        data_dir = Path(".")
+
+    return data_dir
+
 # Version Number
 CURRENT_VERSION = "1.0.0"
 
 bible_notes = {}
 
 
-home_dir = Path.home()
-app_data_dir = home_dir / ".verse_notes_data"
+app_data_dir = get_app_data_dir()
 os.makedirs(app_data_dir, exist_ok=True)
 NOTES_FILENAME = "bible_notes.json"
 NOTES_FILE_PATH = app_data_dir / NOTES_FILENAME 
